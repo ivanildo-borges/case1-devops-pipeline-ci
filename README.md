@@ -8,6 +8,7 @@ dependências de desenvolvimento para validação e testes.
 
 ```text
 .
+├── .dockerignore           # Arquivos não enviados para o contexto Docker
 ├── .gitignore
 ├── app/
 │   ├── __init__.py       # Fábrica da aplicação Flask
@@ -15,6 +16,7 @@ dependências de desenvolvimento para validação e testes.
 ├── tests/
 │   └── test_app.py        # Testes das rotas da aplicação
 ├── main.py                # Ponto de entrada para executar a API
+├── Dockerfile             # Configuração para criar a imagem da aplicação
 ├── pytest.ini             # Configuração de descoberta dos testes
 ├── requirements.txt       # Dependências do projeto
 └── README.md              # Documentação do projeto
@@ -62,6 +64,36 @@ python main.py
 ```
 
 A API ficará disponível em `http://localhost:5000`.
+
+### Executar com Docker localmente
+
+Com o Docker instalado e em execução, crie a imagem:
+
+```bash
+docker build -t fastorder-api:latest .
+```
+
+Depois, inicie o contêiner em segundo plano:
+
+```bash
+docker run -d -p 5000:5000 --name meu-backend fastorder-api:latest
+```
+
+A API ficará disponível em `http://localhost:5000`.
+
+Para acompanhar os logs ou parar o contêiner:
+
+```bash
+docker logs -f meu-backend
+docker stop meu-backend
+```
+
+> **Atenção:** em plataformas modernas de nuvem com planos gratuitos, como
+> Render, Koyeb e Railway, normalmente basta disponibilizar o `Dockerfile` no
+> repositório e configurar o serviço para usar essa aplicação. A própria
+> plataforma realiza o processo de build da imagem e de execução do contêiner
+> nos servidores dela. Nesse cenário, não é necessário executar manualmente
+> os comandos `docker build` e `docker run`.
 
 ## Endpoints disponíveis
 
