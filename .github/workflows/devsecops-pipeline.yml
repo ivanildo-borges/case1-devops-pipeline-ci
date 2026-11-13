@@ -15,7 +15,7 @@ jobs:
   # JOB 1: Testes Funcionais e Qualidade de Código
   lint-and-test:
     name: 1. Qualidade e Testes Funcionais
-    runs-on: ubuntu-2.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Baixar codigo fonte
         uses: actions/checkout@v3
@@ -41,7 +41,7 @@ jobs:
   # JOB 2: Varredura de Segurança (DevSecOps Quality Gates)
   security-scans:
     name: 2. Escaneamento de Segurança (SAST, SCA & Secrets)
-    runs-on: ubuntu-2.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Baixar codigo fonte
         uses: actions/checkout@v3
@@ -78,7 +78,7 @@ jobs:
   docker-build-and-scan:
     name: 3. Build Docker e Scan Trivy
     needs: [lint-and-test, security-scans]
-    runs-on: ubuntu-2.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Baixar codigo fonte
