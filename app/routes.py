@@ -10,7 +10,15 @@ def home():
 
 @api.route("/api/status")
 def status():
-    return jsonify({"status": "operacional", "servico": "Fastorder-Web"})
+    import app as app_pkg  # a flag e lida no momento da requisicao
+
+    return jsonify({
+        "status": "operacional",
+        "servico": "Fastorder-Web",
+        "flags": {
+            "desconto_promo": app_pkg.FEATURE_DESCONTO_PROMO
+        }
+    })
 
 
 @api.route("/api/soma")
@@ -22,3 +30,31 @@ def soma():
         return jsonify({"error": "Parâmetros a e b são obrigatórios"}), 400
 
     return jsonify({"resultado": a + b})
+
+
+# Nova Rota - Protegida pela Feature Flag
+@api.route("/api/desconto")
+def desconto():
+    import app as app_pkg  # a flag e lida no momento da requisicao
+
+    if not app_pkg.FEATURE_DESCONTO_PROMO:
+        return jsonify({
+            "erro": "Funcionalidade em construcao ou desativada temporariamente",
+            "flag_status": False
+        }), 403
+
+    try:
+        valor_total = float(request.args.get("valor", 0))
+        porcentagem = float(request.args.get("porcentagem", 10))
+
+        if valor_total <= 0:
+            return jsonify({"erro": "Valor deve ser maior que zero"}), 400
+
+        valor_com_desconto = valor_total - (valor_total * (porcentagem / 100))
+        return jsonify({
+            "valor_original": valor_total,
+            "desconto_aplicado": f"{porcentagem}%",
+            "valor_final": valor_com_desconto
+        })
+    except (ValueError, TypeError):
+        return jsonify({"erro": "Parametros de desconto invalidos"}), 400
