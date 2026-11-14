@@ -28,7 +28,7 @@ jobs:
       - name: Instalar Dependencias
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
 
       - name: Lint com Flake8
         run: |
@@ -56,7 +56,7 @@ jobs:
       - name: Instalar Dependencias
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
 
       # Varredura de Segredos
       - name: Secret Scanning (TruffleHog)
@@ -72,7 +72,7 @@ jobs:
       # Análise de Composição de Software (SCA)
       - name: SCA - Análise de Dependências com Pip-Audit
         run: |
-          pip-audit -r requirements.txt
+          pip-audit -r requirements-dev.txt
 
   # JOB 3: Build Local e Scan de Vulnerabilidades da Imagem
   docker-build-and-scan:
@@ -94,6 +94,6 @@ jobs:
           image-ref: 'app:test'
           format: 'table'
           exit-code: '1'
-          ignore-unfixed: true
+          ignore-unfixed: false
           vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL,HIGH,MEDIUM'
