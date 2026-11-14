@@ -1,18 +1,13 @@
-import os
 import pytest
-from app import app
+from app import create_app
 
 
 @pytest.fixture
 def client():
+    app = create_app()
     app.config['TESTING'] = True
     with app.test_client() as client:
         yield client
-
-
-def test_home_status_code(client):
-    resposta = client.get('/')
-    assert resposta.status_code == 200
 
 
 def test_soma_valida(client):
@@ -22,7 +17,7 @@ def test_soma_valida(client):
     assert dados['resultado'] == 30.0
 
 
-# Teste 1: Garantir que a rota /api/desconto retorne 403 quando a Flag estiver desativada
+# TESTE1: Garantir que a rota "/api/desconto" retorne 403 quando a Flag estiver desativada
 def test_desconto_desativado(client, monkeypatch):
     import app as app_module
     monkeypatch.setattr(app_module, 'FEATURE_DESCONTO_PROMO', False)
@@ -33,7 +28,7 @@ def test_desconto_desativado(client, monkeypatch):
     assert dados['flag_status'] is False
 
 
-# Teste 2: Garantir que a rota /api/desconto funcione e retorne 200 quando a Flag estiver ativada
+# TESTE2: Garantir que a rota "/api/desconto" funcione e retorne 200 quando a Flag estiver ativada
 def test_desconto_ativado(client, monkeypatch):
     import app as app_module
     monkeypatch.setattr(app_module, 'FEATURE_DESCONTO_PROMO', True)

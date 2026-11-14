@@ -1,7 +1,5 @@
 import os
-
 from flask import Flask
-
 from app.routes import api
 
 # Feature Flag lida de variavel de ambiente (padrao: desativada).
@@ -13,7 +11,3 @@ def create_app():
     app = Flask(__name__)
     app.register_blueprint(api)
     return app
-
-
-# Instancia usada pelos testes (from app import app)
-app = create_app()
