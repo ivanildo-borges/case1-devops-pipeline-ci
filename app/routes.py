@@ -10,8 +10,7 @@ def home():
 
 @api.route("/api/status")
 def status():
-    import app as app_pkg  # a flag e lida no momento da requisicao
-
+    import app as app_pkg
     return jsonify({
         "status": "operacional",
         "servico": "Fastorder-Web",
@@ -35,7 +34,7 @@ def soma():
 # Nova Rota - Protegida pela Feature Flag
 @api.route("/api/desconto")
 def desconto():
-    import app as app_pkg  # a flag e lida no momento da requisicao
+    import app as app_pkg
 
     if not app_pkg.FEATURE_DESCONTO_PROMO:
         return jsonify({
