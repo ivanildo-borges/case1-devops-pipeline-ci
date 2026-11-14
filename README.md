@@ -34,6 +34,9 @@ pytest para localizar o pacote `app` a partir da raiz do projeto.
 
 - Python 3.10 ou superior
 - `pip`
+- Docker Desktop
+- Git 
+- Chave/PAT do GitHub
 
 ### 2. Criar e ativar o ambiente virtual
 
@@ -42,6 +45,12 @@ No Windows PowerShell:
 ```powershell
 python -m venv venv
 .\venv\Scripts\Activate.ps1
+```
+
+No Windows Prompt Command (CMD):
+```bash
+python -m venv venv
+.\venv\Scripts\activate
 ```
 
 No Linux ou macOS:
@@ -76,7 +85,7 @@ docker build -t fastorder-api:latest .
 Depois, inicie o contêiner em segundo plano:
 
 ```bash
-docker run -d -p 5000:5000 --name meu-backend fastorder-api:latest
+docker run -d -p 5000:5000 --name fastorder-container fastorder-api:latest
 ```
 
 A API ficará disponível em `http://localhost:5000`.
@@ -84,8 +93,8 @@ A API ficará disponível em `http://localhost:5000`.
 Para acompanhar os logs ou parar o contêiner:
 
 ```bash
-docker logs -f meu-backend
-docker stop meu-backend
+docker logs -f fastorder-container
+docker stop fastorder-container
 ```
 
 > **Atenção:** em plataformas modernas de nuvem com planos gratuitos, como
