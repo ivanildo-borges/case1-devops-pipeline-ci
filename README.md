@@ -1,4 +1,4 @@
-# case1-devops-pipeline-ci
+# case2-DevSecOps-pipeline-CI
 
 API REST simples desenvolvida com Python e Flask para o projeto FastOrder. O
 repositório também demonstra uma esteira de Integração Contínua (CI), com
@@ -32,11 +32,28 @@ pytest para localizar o pacote `app` a partir da raiz do projeto.
 
 ### 1. Pré-requisitos
 
-- Python 3.10 ou superior
+- Python 3.11 ou superior
 - `pip`
-- Docker Desktop
-- Git 
-- Chave/PAT do GitHub
+- Docker Desktop em execução
+- Git
+- Trivy instalado ou acesso ao Docker para executá-lo como contêiner
+
+### Por que usar Trivy e Bandit?
+
+As ferramentas atuam em camadas diferentes e se complementam na proteção do
+projeto:
+
+- **Trivy** analisa a imagem Docker, identificando vulnerabilidades no sistema
+  operacional e nas bibliotecas instaladas. O resultado impede a publicação de
+  imagens com vulnerabilidades críticas, altas ou médias.
+- **Bandit** realiza análise estática do código Python (SAST), identificando
+  padrões que podem causar problemas de segurança antes da execução da
+  aplicação.
+
+No projeto, o Bandit é executado no job de análise de segurança e o Trivy é
+executado após o build da imagem no job de container. Assim, vulnerabilidades
+no código e na imagem são detectadas durante o desenvolvimento e na integração
+contínua, antes do deploy.
 
 ### 2. Criar e ativar o ambiente virtual
 
@@ -64,6 +81,13 @@ source venv/bin/activate
 
 ```bash
 pip install -r requirements.txt
+```
+
+Para executar testes e análises de segurança localmente, instale também as
+dependências de desenvolvimento:
+
+```bash
+pip install -r requirements-dev.txt
 ```
 
 ### 4. Executar a API
@@ -103,6 +127,38 @@ docker stop fastorder-container
 > plataforma realiza o processo de build da imagem e de execução do contêiner
 > nos servidores dela. Nesse cenário, não é necessário executar manualmente
 > os comandos `docker build` e `docker run`.
+
+### 5. Escaneamento de segurança
+
+#### Trivy: análise da imagem Docker
+
+Depois de criar ou atualizar a imagem, execute o escaneamento com o Trivy:
+
+```bash
+trivy image fastorder-api:latest
+```
+
+Se o Trivy não estiver instalado no sistema, execute-o pelo Docker Desktop:
+
+```bash
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --scanners vuln --severity CRITICAL,HIGH,MEDIUM --ignore-unfixed=false fastorder-api:latest
+```
+
+O comando deve retornar zero vulnerabilidades críticas, altas ou médias. O
+pipeline aplica o mesmo critério e falha quando encontra uma vulnerabilidade
+nessas severidades.
+
+#### Bandit: análise estática do código Python
+
+Com as dependências de desenvolvimento instaladas, execute:
+
+```bash
+bandit -r app main.py -ll -ii
+```
+
+O comando analisa o código da aplicação sem executá-lo. As opções `-ll` e
+`-ii` incluem problemas de severidade e confiança médias ou altas, permitindo
+que o mesmo tipo de alerta verificado pela esteira seja reproduzido localmente.
 
 ## Endpoints disponíveis
 
