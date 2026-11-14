@@ -10,7 +10,8 @@ RUN apk upgrade --no-cache
 # Define variáveis de ambiente para evitar a criação de arquivos .pyc 
 # e para que o Python não faça buffering da saída
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    HOST=0.0.0.0
 
 # Copia apenas as dependências de runtime (otimização de cache do Docker)
 COPY requirements.txt .
